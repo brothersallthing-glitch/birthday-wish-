@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Birthday Wish — Interactive Link</title>
+  <style>
+    :root{--bg:#0f172a;--card:#0b1220;--accent:#f97316;--text:#f8fafc}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans',sans-serif;background:linear-gradient(180deg,#071129 0%, #081329 100%);color:var(--text);display:flex;align-items:center;justify-content:center;height:100vh}
+    .card{width:min(800px,94vw);background:rgba(255,255,255,0.03);padding:28px;border-radius:16px;box-shadow:0 10px 30px rgba(2,6,23,0.6);text-align:center}
+    h1{font-size:clamp(28px,5vw,44px);margin:0 0 8px}
+    p{margin:8px 0 16px;color:rgba(248,250,252,0.85)}
+    .btn{display:inline-block;padding:10px 18px;border-radius:10px;background:linear-gradient(90deg,var(--accent),#ef4444);color:#081129;font-weight:700;text-decoration:none;cursor:pointer}
+    .small{font-size:14px;color:rgba(248,250,252,0.7)}
+    .hidden{display:none}
+    .photos{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:12px}
+    .photos img{width:100%;height:120px;object-fit:cover;border-radius:10px;border:2px solid rgba(255,255,255,0.06)}
+    .controls{margin-top:18px;display:flex;gap:10px;justify-content:center}
+    footer{margin-top:12px;font-size:13px;color:rgba(248,250,252,0.6)}
+  </style>
+</head>
+<body>
+  <div class="card" role="main">
+    <!-- STEP containers -->
+    <section id="step1">
+      <h1>Happy Birthday, Arafat Islam! 🎉 🎉</h1>
+      <p class="small">তোমার স্পেশাল দিনটা শুরু করতে নিচের লিংকে ক্লিক করো — পরপর ক্লিক করলে পরবর্তী পেজগুলো আসবে।</p>
+      <div class="controls">
+        <button class="btn" id="toStep2">Next — </button>
+      </div>
+      <footer>Click count: <span id="count1">0</span></footer>
+    </section>
+
+    <section id="step2" class="hidden">
+      <h1>ভালোবাসা আর দোয়া</h1>
+      <p>তোর জীবনের প্রতিটা দিন হোক হাসি, শান্তি আর সাফল্যে ভরা। তুই আমার সবচেয়ে প্রিয় বন্ধু, প্রিয় ভাই, ।</p>
+      <div class="controls">
+        <button class="btn" id="toStep3">Next —</button>
+      </div>
+    </section>
+
+    <section id="step3" class="hidden">
+      <h1>আমার কিছু ফটো</h1>
+      <p class="small">নীচের ছবি গুলোতে ক্লিক করলেই বড় হয়। তোমার নিজের ছবি ব্যবহার করতে 'photos' ফোল্ডারে image1.jpg, image2.jpg ইত্যাদি নাম দিয়ে রিপ্লেস করো।</p>
+      <div class="photos" id="photoGrid">
+        <!-- Replace src with your own photo paths (e.g., photos/photo1.jpg,photos2.jpg,photos3.jpg) -->
+        <img src="photos/photo1.jpg" alt="Photo 1" onerror="this.style.opacity=.4; this.title='Replace this src with your photo (photos/photo1.jpg)';">
+        <img src="photos/photo2.jpg" alt="Photo 2" onerror="this.style.opacity=.4; this.title='Replace this src with your photo (photos/photo2.jpg)';">
+        <img src="photos/photo3.jpg" alt="Photo 3" onerror="this.style.opacity=.4; this.title='Replace this src with your photo (photos/photo3.jpg)';">
+      </div>
+      <div class="controls">
+        <button class="btn" id="toStep4">Next — </button>
+      </div>
+    </section>
+
+    <section id="step4" class="hidden">
+      <h1>শেষ কথাটি</h1>
+      <p>ভালো থাকিস, সুস্থ থাকিস, আর যেটা স্বপ্ন দেখিস — একদিন ঠিকই পূরণ হোক।<br>আল্লাহ তোকে দিক পৃথিবীর সব সুখ। ❤️✨</p>
+      <div class="controls">
+        <button class="btn" id="replay">Replay</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Lightbox for viewing photos larger -->
+  <div id="lightbox" class="hidden" style="position:fixed;inset:0;background:rgba(2,6,23,0.85);display:flex;align-items:center;justify-content:center;padding:20px">
+    <img id="lightboxImg" src="" alt="" style="max-width:96%;max-height:90%;border-radius:10px;box-shadow:0 10px 40px rgba(2,6,23,0.8)">
+  </div>
+
+  <script>
+    const steps = [document.getElementById('step1'),document.getElementById('step2'),document.getElementById('step3'),document.getElementById('step4')];
+    let current = 0;
+    const show = i=>{
+      steps.forEach((s,idx)=> s.classList.toggle('hidden', idx!==i));
+      current = i;
+    }
+    document.getElementById('toStep2').onclick = ()=>{ show(1); document.getElementById('count1').textContent = parseInt(document.getElementById('count1').textContent||0)+1 }
+    document.getElementById('toStep3').onclick = ()=> show(2)
+    document.getElementById('toStep4').onclick = ()=> show(3)
+    document.getElementById('replay').onclick = ()=> show(0)
+
+    // Photo lightbox
+    document.getElementById('photoGrid').addEventListener('click', e=>{
+      if(e.target.tagName==='IMG'){
+        const lb = document.getElementById('lightbox');
+        const img = document.getElementById('lightboxImg');
+        img.src = e.target.src;
+        lb.classList.remove('hidden');
+      }
+    })
+    document.getElementById('lightbox').addEventListener('click', ()=>{
+      document.getElementById('lightbox').classList.add('hidden');
+      document.getElementById('lightboxImg').src = '';
+    })
+
+    // Allow using Enter or Space to go next when focused on card
+    document.addEventListener('keydown', e=>{
+      if(e.key==='Enter' || e.key===' '){
+        if(current<steps.length-1) show(current+1); else show(0);
+      }
+      if(e.key==='Escape') document.getElementById('lightbox').classList.add('hidden');
+    })
+  </script>
+
+  <!--
+    Instructions (replace below):
+    1) Save this file as `index.html` and put it online or open locally in a browser.
+    2) Add your photos in a subfolder named `photos` with filenames: photo1.jpg, photo2.jpg, photo3.jpg (or change the <img src=> paths).
+    3) Share the file URL (or upload to GitHub Pages / Netlify) and send the link to your friend.
+  -->
+</body>
+</html>
